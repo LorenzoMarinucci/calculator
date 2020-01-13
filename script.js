@@ -65,7 +65,7 @@ function addSubtract(array) {
 function evaluate(string) {
     let array=[""], j=0;
     for (let i=0; i<string.length; i++) {
-        if (isNaN(+string[i])) {
+        if (isNaN(+string[i]) && string[i]!=='.') {
             array.push(string[i]);
             j+=2;
             array[j]="";
@@ -77,7 +77,16 @@ function evaluate(string) {
         array=divideMultiply(array);
         console.log(array);
         array=addSubtract(array);
-        return Math.round(array[0]*Math.pow(10, 5))/Math.pow(10,5);
+        let result=Math.round(array[0]*Math.pow(10, 5))/Math.pow(10,5);
+        console.log(result);
+        if (result == Infinity || result == -Infinity || isNaN(result)) {
+            display="";
+            displayText.textContent="Math error";
+        }
+        else {
+            display=result;
+            displayText.textContent=result;
+        }
     }
     else {
         display="";
@@ -90,16 +99,17 @@ function input(e) {
         clearDisplay();
         enable();
     }
-    else {
-        if (e.target.classList.contains("number"))
-            display+=e.target.id;
-        else if (e.target.classList.contains("operator"))
-                display+=`${e.target.id}`;
-            else if (e.target.classList.contains("equal"))
-                    display=evaluate(displayText.textContent);
-        displayText.textContent=display;
+    else if (e.target.classList.contains("equal")) {
+        evaluate(displayText.textContent);
     }
-    limit();
+        else {
+            //if (e.target.classList.contains("number"))
+              //  display+=e.target.id;
+            //else if (e.target.classList.contains("operator"))
+            display+=`${e.target.id}`;
+            displayText.textContent=display;
+            limit();
+        }
 }
 
 buttons.forEach(button => {
