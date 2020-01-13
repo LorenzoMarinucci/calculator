@@ -92,7 +92,7 @@ function evaluate(string) {
         array=divideMultiply(array);
         console.log(array);
         array=addSubtract(array);
-        let result=Math.round(array[0]*Math.pow(10, 5))/Math.pow(10,5);
+        let result=Math.round(array[0]*Math.pow(10, 19))/Math.pow(10,19);
         console.log(result);
         if (result == Infinity || result == -Infinity || isNaN(result)) {
             display="";
@@ -111,23 +111,27 @@ function evaluate(string) {
         display="";
         displayText.textContent="Syntax error";
     }
+    if (display.length<19) enable();
 }
 
 function input(e) {
-    if (e.target.id==="clear") {
+    if (e.target.id==="c") {
         if (displayText.textContent.length===19) enable();
         else document.getElementById('.').removeAttribute('disabled');
         clearDisplay();
     }
-    else if (e.target.classList.contains("equal"))
+    else if (e.target.id==="Enter")
             evaluate(displayText.textContent);
-        else if (e.target.id==="backspace") {
+        else if (e.target.id==="Backspace") {
                 if (display[display.length-1]==".") document.getElementById('.').removeAttribute('disabled');
                 display=display.slice(0, display.length-1);
-                if (display)
+                if (display) {
                     displayText.textContent=display;
+                    if (display.length==18)
+                        enable();
+                }
                 else
-                    displayText.textContent="0";         
+                    displayText.textContent="0";      
             }
             else {
                 if (isNaN(e.target.id)){
@@ -157,3 +161,51 @@ function enable() {
     numbers.forEach(number => number.removeAttribute('disabled'));
     operators.forEach(operator => operator.removeAttribute('disabled'));
 }
+
+window.addEventListener('keydown', (e) => {
+        if (((display.length<19) && (!isNaN(e.key) || e.key=="+" || e.key=="*" || e.key=="-"
+                    || e.key=="/" || (e.key=="." && document.getElementById('.').getAttribute('disabled')!=='true'))) 
+                    || e.key=="Backspace" || e.key=="Enter" || e.key=="c") {
+            let obj = {...e};
+            obj.target={};
+            obj.target.id=e.key;
+            console.log(e.key);
+            console.log(e.target.id);
+            console.log(document.getElementById('.').getAttribute('disabled'));
+            let key=document.getElementById(e.key);
+            key.classList.add('pressed');
+            window.setTimeout(() => {key.classList.remove('pressed')}, 100);   
+            input(obj);
+        }
+});
+
+/*
+        if (e.key==="c") {
+            if (displayText.textContent.length===19) enable();
+            else document.getElementById('.').removeAttribute('disabled');
+            clearDisplay();
+        }
+        else if (e.key==="Enter")
+                evaluate(displayText.textContent);
+            else if (e.key==="Backspace") {
+                    if (display[display.length-1]==".") document.getElementById('.').removeAttribute('disabled');
+                    display=display.slice(0, display.length-1);
+                    if (display)
+                        displayText.textContent=display;
+                    else
+                        displayText.textContent="0";         
+                }
+                else {
+                    if ((display.length<19) && (!isNaN(e.key) || e.key=="+" || e.key=="-" || e.key=="*" || e.key=="/" || e.key==".")) {
+                     if (isNaN(e.key)){
+                            if (e.key=='.')
+                                document.getElementById('.').setAttribute('disabled', 'true');
+                            else 
+                                document.getElementById('.').removeAttribute('disabled');
+                     }
+                        display+=`${e.key}`;
+                        displayText.textContent=display;
+                        limit();
+                    }
+                }    
+            }); */

@@ -96,7 +96,7 @@ button.operator, button.option {
 }
 
 
-button:active {
+button:active, button.pressed {
     transform: scale(0.9);
 }
 
