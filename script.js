@@ -1,5 +1,8 @@
 let display="";
 const buttons = document.querySelectorAll("button");
+      numbers = document.querySelectorAll(".number");
+      clear = document.querySelector("#clear");
+      operators = document.querySelectorAll(".operator");
       displayText = document.querySelector("#displayText");
       add = (a, b) => a+b;
       subtract = (a, b) => a-b;
@@ -17,16 +20,100 @@ function operate(a, b, operator) {
     return operations[operator](a,b);
 }
 
+function clearDisplay() {
+    display="";
+    displayText.textContent="0";
+};
+
+function validInput(array) {
+    return true;
+}
+
+function divideMultiply(array){
+    let firstNumber, secondNumber, operator, i=0;
+    firstNumber=array[i++];
+    while (i<array.length) {
+        operator=array[i++];
+        secondNumber=array[i++];
+        if (operator=="/" || operator=="*") {
+            i=i-3;
+            array.splice(i, 3, operate(+firstNumber, +secondNumber, operator));
+            firstNumber=array[i++];
+            console.log(array.length);
+            console.log(i);
+            console.log(array);
+        }
+        else 
+            firstNumber=secondNumber;
+    }
+    return array;
+}
+
+function addSubtract(array) {
+    let firstNumber, secondNumber, operator, i=0;
+    firstNumber=array[i++];
+    while (i<array.length) {
+        operator=array[i++];
+        secondNumber=array[i++];
+        i=i-3;
+        array.splice(i, 3, operate(+firstNumber, +secondNumber, operator));
+        firstNumber=array[i++];
+    }
+    return array;
+}
+
+function evaluate(string) {
+    let array=[""], j=0;
+    for (let i=0; i<string.length; i++) {
+        if (isNaN(+string[i])) {
+            array.push(string[i]);
+            j+=2;
+            array[j]="";
+        }
+        else
+            array[j]+=string[i];
+    }
+    if (validInput(array)) {
+        array=divideMultiply(array);
+        console.log(array);
+        array=addSubtract(array);
+        return Math.round(array[0]*Math.pow(10, 5))/Math.pow(10,5);
+    }
+    else {
+        display="";
+        displayText.textContent="Syntax error";
+    }
+}
+
 function input(e) {
-    if (e.target.classList.contains("number") || e.target.classList.contains("operator"))
-        display+=e.target.id;
-    else if (e.target.classList.contains("equal"))
-            display=evaluate(displayText);
-    console.log(e.target.id);
-    displayText.textContent=display;
+    if (e.target.id==="clear") {
+        clearDisplay();
+        enable();
+    }
+    else {
+        if (e.target.classList.contains("number"))
+            display+=e.target.id;
+        else if (e.target.classList.contains("operator"))
+                display+=`${e.target.id}`;
+            else if (e.target.classList.contains("equal"))
+                    display=evaluate(displayText.textContent);
+        displayText.textContent=display;
+    }
+    limit();
 }
 
 buttons.forEach(button => {
     button.addEventListener('click', input);
 });
 
+function limit() {
+    if (displayText.textContent.length===19) {
+        numbers.forEach(number => number.setAttribute('disabled', 'true'));
+        operators.forEach(operator => operator.setAttribute('disabled', 'true'));        
+    }
+}
+
+function enable() {
+    numbers.forEach(number => number.removeAttribute('disabled'));
+    operators.forEach(operator => operator.removeAttribute('disabled'));
+}

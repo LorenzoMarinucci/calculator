@@ -39,7 +39,7 @@ html {
     font-family: "Courier";
     font-size: 25px;
     height: 30px;
-    width: 260px;
+    width: 200px;
 }
 
 #buttons {
@@ -79,6 +79,10 @@ button.operator:hover, button.option:hover {
 
 button.equal:hover{
     filter:brightness(115%);
+}
+
+button[disabled="true"]:hover {
+    filter: brightness(100%);
 }
 
 button.equal {
