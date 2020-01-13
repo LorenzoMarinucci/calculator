@@ -85,6 +85,8 @@ function evaluate(string) {
         }
         else {
             display=result;
+            if (!Number.isInteger(+result))
+                document.getElementById('.').setAttribute('disabled', 'true');
             displayText.textContent=result;
         }
     }
@@ -96,16 +98,20 @@ function evaluate(string) {
 
 function input(e) {
     if (e.target.id==="clear") {
+        if (displayText.textContent.length===19) enable();
+        else document.getElementById('.').removeAttribute('disabled');
         clearDisplay();
-        enable();
     }
     else if (e.target.classList.contains("equal")) {
         evaluate(displayText.textContent);
     }
         else {
-            //if (e.target.classList.contains("number"))
-              //  display+=e.target.id;
-            //else if (e.target.classList.contains("operator"))
+            if (isNaN(e.target.id)){
+                if (e.target.id=='.')
+                    document.getElementById('.').setAttribute('disabled', 'true');
+                else
+                    document.getElementById('.').removeAttribute('disabled');
+            }
             display+=`${e.target.id}`;
             displayText.textContent=display;
             limit();
