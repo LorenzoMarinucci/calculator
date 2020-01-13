@@ -2,6 +2,7 @@ let display="";
 const buttons = document.querySelectorAll("button");
       numbers = document.querySelectorAll(".number");
       clear = document.querySelector("#clear");
+      backspace = document.querySelector("#backspace");
       operators = document.querySelectorAll(".operator");
       displayText = document.querySelector("#displayText");
       add = (a, b) => a+b;
@@ -84,10 +85,12 @@ function evaluate(string) {
             displayText.textContent="Math error";
         }
         else {
-            display=result;
-            if (!Number.isInteger(+result))
+            display=""+result;
+            if (!Number.isInteger(result))
                 document.getElementById('.').setAttribute('disabled', 'true');
-            displayText.textContent=result;
+            else
+                document.getElementById('.').removeAttribute('disabled');
+            displayText.textContent=display;
         }
     }
     else {
@@ -102,19 +105,26 @@ function input(e) {
         else document.getElementById('.').removeAttribute('disabled');
         clearDisplay();
     }
-    else if (e.target.classList.contains("equal")) {
-        evaluate(displayText.textContent);
-    }
-        else {
-            if (isNaN(e.target.id)){
-                if (e.target.id=='.')
-                    document.getElementById('.').setAttribute('disabled', 'true');
+    else if (e.target.classList.contains("equal"))
+            evaluate(displayText.textContent);
+        else if (e.target.id==="backspace") {
+                if (display[display.length-1]==".") document.getElementById('.').removeAttribute('disabled');
+                display=display.slice(0, display.length-1);
+                if (display)
+                    displayText.textContent=display;
                 else
-                    document.getElementById('.').removeAttribute('disabled');
+                    displayText.textContent="0";         
             }
-            display+=`${e.target.id}`;
-            displayText.textContent=display;
-            limit();
+            else {
+                if (isNaN(e.target.id)){
+                    if (e.target.id=='.')
+                        document.getElementById('.').setAttribute('disabled', 'true');
+                    else
+                        document.getElementById('.').removeAttribute('disabled');
+                }
+                display+=`${e.target.id}`;
+                displayText.textContent=display;
+                limit();
         }
 }
 
