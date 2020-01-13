@@ -27,7 +27,20 @@ function clearDisplay() {
 };
 
 function validInput(array) {
-    return true;
+    let operator=true;
+    console.log(array);
+    for (let i=0; i<array.length; i++) {
+        if (isNaN(array[i])) {
+            if (!operator)  {
+                return false;
+            }
+            else
+                operator=false;
+        }
+        else
+            operator=true;
+    }
+    return (operator==true);
 }
 
 function divideMultiply(array){
@@ -68,11 +81,12 @@ function evaluate(string) {
     for (let i=0; i<string.length; i++) {
         if (isNaN(+string[i]) && string[i]!=='.') {
             array.push(string[i]);
-            j+=2;
-            array[j]="";
+            j=array.length;
         }
-        else
+        else {
+            if (!array[j]) array[j]="";
             array[j]+=string[i];
+        }
     }
     if (validInput(array)) {
         array=divideMultiply(array);
